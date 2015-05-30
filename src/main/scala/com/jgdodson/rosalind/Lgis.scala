@@ -8,35 +8,15 @@ object Lgis {
 
     val seq = readLines(args(0)).tail.flatMap(_.split(" ")).map(_.toInt)
 
-    println(longestMonotonic2(seq)(_ > _).mkString(" "))
-    println(longestMonotonic2(seq)(_ < _).mkString(" "))
+    println(longestMonotonic(seq)(_ > _).mkString(" "))
+    println(longestMonotonic(seq)(_ < _).mkString(" "))
   }
 
   // Only need one subsequence of a particular length at any point in the computation!!!
   // The one with the smallest last element is the one that survives. Use a map from length to seq.
-  def longestMonotonic1(seq: Vector[Int])(cmp: (Int, Int) => Boolean): Vector[Int] = {
-
-    assert(seq.nonEmpty)
-
-    seq.tail.foldLeft(Set(Vector(seq.head))) { (acc, next) =>
-
-      var flag = false
-
-      val tmp = acc.foldLeft(Set[Vector[Int]]()) { (acc, subseq) =>
-        if (cmp(next, subseq.last)) {
-          flag = true
-          (acc + (subseq :+ next)) + subseq
-        }
-        else acc + subseq
-      }
-
-      if (flag) tmp
-      else tmp + Vector(next)
-    } maxBy (_.length)
-  }
 
   // Need to traverse map by decreasing key to prevent masking (use a range)
-  def longestMonotonic2(seq: Vector[Int])(cmp: (Int, Int) => Boolean): Vector[Int] = {
+  def longestMonotonic(seq: Vector[Int])(cmp: (Int, Int) => Boolean): Vector[Int] = {
 
     assert(seq.nonEmpty)
 
@@ -46,13 +26,8 @@ object Lgis {
 
         if (cmp(i, acc(len).last)) {
 
-          if (acc.isDefinedAt(len + 1)) {
-
-            if (!cmp(i, acc(len + 1).last)) {
-              acc + ((len + 1) -> (acc(len) :+ i))
-            } else {
+          if (acc.isDefinedAt(len + 1) && cmp(i, acc(len + 1).last)) {
               acc
-            }
           } else {
             acc + ((len + 1) -> (acc(len) :+ i))
           }
