@@ -21,7 +21,7 @@ case class RNAString(seq: String) extends GeneticString {
     RNAString(seq.split(introns.map(_.seq).mkString("|")).mkString(""))
   }
 
-  def candidateProteins: Set[(Int, Int)] = {
+  def openFrames: Set[(Int, Int)] = {
 
     def isStartCodon(codon: String): Boolean = {
       RNAString.rnaCodonTable(codon) == 'M'
@@ -31,7 +31,7 @@ case class RNAString(seq: String) extends GeneticString {
       RNAString.rnaCodonTable(codon) == 'X'
     }
 
-    def oneway(seq: String) = {
+    def onepass(seq: String) = {
       (1 to seq.length - 3).foldLeft((for (_ <- 0 to 2) yield Set[(Int, Int)](), Set[(Int, Int)]())) { (acc, i) =>
         val binNum = i % 3
         val codon = seq.substring(i, i + 3)
@@ -45,7 +45,7 @@ case class RNAString(seq: String) extends GeneticString {
       }._2
     }
 
-    oneway(seq) ++ oneway(seq.reverse)
+    onepass(seq) ++ onepass(seq.reverse)
   }
 
   def reverse: RNAString = RNAString(seq.reverse)
