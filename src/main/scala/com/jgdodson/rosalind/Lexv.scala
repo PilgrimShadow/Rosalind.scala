@@ -10,12 +10,12 @@ object Lexv {
     val len = Integer.parseInt(lines(1).trim())
 
     // Loosen up types to prevent these conversions
-    val words = enumerateVar(len, alpha.toSet)
+    val words = enumerateVar(len, alpha)
     val sorted = words.toVector.sorted(order)
     println(sorted.mkString("\n"))
   }
 
-  def enumerateVar[T](maxLen: Int, alphabet: Set[T]): Set[String] = {
+  def enumerateVar[T](maxLen: Int, alphabet: Seq[T]): Set[String] = {
     (1 to maxLen).foldLeft(Set[String]())((acc, next) => acc ++ Lexf.enumerateFixed(next, alphabet))
   }
 

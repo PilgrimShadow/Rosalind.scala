@@ -9,8 +9,6 @@ case class RNAString(seq: String) extends GeneticString {
 
   val alphabet = RNAString.alphabet
 
-  val length = seq.length
-
   def masses = RNAString.masses
 
   def toDNAString: DNAString = DNAString(seq.replace('U', 'T'))

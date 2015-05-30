@@ -9,18 +9,31 @@ case class DNAString(seq: String) extends GeneticString {
 
   def alphabet: Seq[Char] = DNAString.alphabet
 
-  val length = seq.length
-
   def masses = DNAString.masses
 
   def toRNAString: RNAString = RNAString(seq.replace('T', 'U'))
 
   def complement: DNAString = DNAString(seq.map(DNAString.complements))
 
+  def gcContent: Double = {
+    seq.foldLeft(0.0) { (acc, next) =>
+      if (Set('C', 'G').contains(next)) acc + 1
+      else acc
+    } / length
+  }
+
+  def atContent: Double = 1 - gcContent
+
   def reverse: DNAString = DNAString(seq.reverse)
 
   def reverseComplement: DNAString = DNAString(seq.reverseMap(DNAString.complements))
 
+
+  def removeIntrons(introns: Seq[DNAString]): DNAString = {
+    DNAString(seq.split(introns.mkString("|")).mkString(""))
+  }
+
+  // Review this function
   def restrictionSites: Set[(Int, Int)] = {
 
     (0 until seq.length).foldLeft(Set[(Int, Int)]()) { (acc, i) =>

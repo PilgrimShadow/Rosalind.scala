@@ -10,36 +10,18 @@ object Lexf {
     val len = Integer.parseInt(lines(1).trim())
 
     // Loosen up types to prevent these conversions (all we need is an iterable, right?)
-    val words = enumerateFixed(len, alpha.toSet)
+    val words = enumerateFixed(len, alpha)
     val sorted = words.toVector.sorted(order)
     println(sorted.mkString("\n"))
   }
 
-  /**
-   * Returns a set containing every string of given length from the given alphabet.
-   *
-   * @param len The string length.
-   * @param alphabet The string representation of these items form the alphabet.
-   * @tparam T The type of items in the alphabet.
-   * @return
-   */
-  def enumerateFixed[T](len: Int, alphabet: Set[T]): Set[String] = {
+  def enumerateFixed[T](len: Int, alphabet: Seq[T]): Seq[String] = {
 
     assert(len >= 0)
 
-    // Return a set with the given piece prepended to all strings.
-    def prependAll(n: T, ss: Set[String]): Set[String] = {
-      ss.map(item => n.toString + item)
-    }
-
-    if (len <= 0) Set[String]()
+    if (len == 0) Seq[String]()
     else if (len == 1) alphabet.map(_.toString)
-    else {
-      // avoid vicious re-computation
-      val subSolution = enumerateFixed(len - 1, alphabet)
-
-      alphabet.foldLeft(Set[String]())((acc, next) => acc ++ prependAll(next, subSolution))
-    }
+    else alphabet.flatMap((next: T) => enumerateFixed(len - 1, alphabet).map(item => next.toString + item))
   }
 
   def makeOrdering(alphabet: Seq[Char]): Ordering[String] = new Ordering[String] {
