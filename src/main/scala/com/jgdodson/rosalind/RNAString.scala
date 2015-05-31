@@ -1,6 +1,6 @@
 package com.jgdodson.rosalind
 
-case class RNAString(seq: String) extends GeneticString {
+case class RNAString(seq: String) extends GeneticString[RNAString] {
 
   // Error checking during initialization.
   if (seq.exists(ch => !alphabet.contains(ch))) {
@@ -14,10 +14,6 @@ case class RNAString(seq: String) extends GeneticString {
   def toDNAString: DNAString = DNAString(seq.replace('U', 'T'))
 
   def toProteinString: ProteinString = ProteinString(seq.grouped(3).map(RNAString.rnaCodonTable).toString)
-
-  def splice(introns: Seq[RNAString]): RNAString = {
-    RNAString(seq.split(introns.map(_.seq).mkString("|")).mkString(""))
-  }
 
   def openFrames: Set[(Int, Int)] = {
 

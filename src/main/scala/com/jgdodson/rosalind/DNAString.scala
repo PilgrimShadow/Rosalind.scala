@@ -1,6 +1,6 @@
 package com.jgdodson.rosalind
 
-case class DNAString(seq: String) extends GeneticString {
+case class DNAString(seq: String) extends GeneticString[DNAString] {
 
   // Error checking during initialization.
   if (seq.exists(ch => !alphabet.contains(ch))) {

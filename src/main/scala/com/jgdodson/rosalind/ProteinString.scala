@@ -1,6 +1,6 @@
 package com.jgdodson.rosalind
 
-case class ProteinString(seq: String) extends GeneticString {
+case class ProteinString(seq: String) extends GeneticString[ProteinString] {
 
   def alphabet: Seq[Char] = ProteinString.alphabet
 

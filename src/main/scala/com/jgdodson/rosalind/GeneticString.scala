@@ -1,6 +1,7 @@
 package com.jgdodson.rosalind
 
-abstract class GeneticString {
+// It's weired how the types work out just right... (Curiously Recursive Template Pattern)
+abstract class GeneticString[T <: GeneticString[T]] {
 
   val seq: String
 
@@ -14,7 +15,7 @@ abstract class GeneticString {
 
   def mass: Double = seq.foldLeft(0.0)(_ + masses(_))
 
-  def reverse: GeneticString
+  def reverse: GeneticString[T]
 
   // TODO: convert this into an explicit motif finding function
   def failureArray: Vector[Int] = {
@@ -33,5 +34,24 @@ abstract class GeneticString {
       val index = indices(seq.substring(next, next + k))
       acc.updated(index, acc(index) + 1)
     }
+  }
+
+  def hammingDistance(other: T): Int = {
+    val min = Math.min(length, other.length)
+    val max = Math.max(length, other.length)
+
+    (0 until min).count(i => seq(i) != other.seq(i)) + (max - min)
+  }
+
+  def findSplicedMotif(motif: T): Option[Vector[Int]] = {
+
+    val res = (0 until seq.length).foldLeft(motif.seq, Vector[Int]()) { (acc, i) =>
+      if (acc._1.isEmpty) acc
+      else if (seq(i) == acc._1.head) (acc._1.tail, acc._2 :+ i)
+      else acc
+    }
+
+    if (res._1.isEmpty) Some(res._2)
+    else None
   }
 }
