@@ -1,6 +1,6 @@
 package com.jgdodson.rosalind
 
-// It's weired how the types work out just right... (Curiously Recursive Template Pattern)
+// It's weired how the types work out just right... (Curiously Recurring Template Pattern)
 abstract class GeneticString[T <: GeneticString[T]] {
 
   val seq: String
@@ -15,7 +15,9 @@ abstract class GeneticString[T <: GeneticString[T]] {
 
   def mass: Double = seq.foldLeft(0.0)(_ + masses(_))
 
-  def reverse: GeneticString[T]
+  def reverse: T
+
+  def substring(start: Int, end: Int): T
 
   // TODO: convert this into an explicit motif finding function
   def failureArray: Vector[Int] = {
@@ -23,6 +25,17 @@ abstract class GeneticString[T <: GeneticString[T]] {
     (1 until seq.length).foldLeft((Vector[Int](0), Set[Int](0))) { (acc, next) =>
       val updated = acc._2.filter(i => seq(next) == seq(i)).map(i => i + 1) + 0
       (acc._1 :+ updated.max, updated)
+    }._1
+  }
+
+  // Based on the Knuth-Morris-Pratt algorithm.
+  def findMotif(other: T): Vector[Int] = {
+
+    (0 until seq.length).foldLeft((Vector[Int](), Set[Int](0))) { (acc, next) =>
+      val updated = acc._2.filter(i => seq(next) == other.seq(i)).map(_ + 1) + 0
+
+      if (updated.max == other.length) (acc._1 :+ (next - updated.max + 1), updated - updated.max)
+      else (acc._1, updated)
     }._1
   }
 
@@ -36,6 +49,7 @@ abstract class GeneticString[T <: GeneticString[T]] {
     }
   }
 
+  // Allows for strings of different length
   def hammingDistance(other: T): Int = {
     val min = Math.min(length, other.length)
     val max = Math.max(length, other.length)
@@ -53,5 +67,16 @@ abstract class GeneticString[T <: GeneticString[T]] {
 
     if (res._1.isEmpty) Some(res._2)
     else None
+  }
+
+  // TODO: Finish this
+  def longestSharedSplicedMotif(other: T): T = {
+
+    val minLen = math.min(seq.length, other.seq.length)
+
+    (0 until minLen).foldLeft(((Set[Char](), Set[Char]()), "")) { (acc, next) =>
+      ???
+    }
+    ???
   }
 }

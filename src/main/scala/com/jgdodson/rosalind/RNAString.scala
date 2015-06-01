@@ -4,16 +4,20 @@ case class RNAString(seq: String) extends GeneticString[RNAString] {
 
   // Error checking during initialization.
   if (seq.exists(ch => !alphabet.contains(ch))) {
-    throw new Error("DNA contains non-ACGT character")
+    throw new Error("RNA string contains invalid character.")
   }
 
-  val alphabet = RNAString.alphabet
+  def alphabet: Seq[Char] = RNAString.alphabet
 
   def masses = RNAString.masses
 
   def toDNAString: DNAString = DNAString(seq.replace('U', 'T'))
 
   def toProteinString: ProteinString = ProteinString(seq.grouped(3).map(RNAString.rnaCodonTable).toString)
+
+  def substring(start: Int, end: Int): RNAString = {
+    RNAString(seq.substring(start, end))
+  }
 
   def openFrames: Set[(Int, Int)] = {
 

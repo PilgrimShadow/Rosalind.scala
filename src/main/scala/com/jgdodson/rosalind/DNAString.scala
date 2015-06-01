@@ -4,7 +4,7 @@ case class DNAString(seq: String) extends GeneticString[DNAString] {
 
   // Error checking during initialization.
   if (seq.exists(ch => !alphabet.contains(ch))) {
-    throw new Error("DNA contains non-ACGT character")
+    throw new Error("DNA string contains invalid character.")
   }
 
   def alphabet: Seq[Char] = DNAString.alphabet
@@ -13,16 +13,27 @@ case class DNAString(seq: String) extends GeneticString[DNAString] {
 
   def toRNAString: RNAString = RNAString(seq.replace('T', 'U'))
 
+  def substring(start: Int, end: Int): DNAString = {
+    DNAString(seq.substring(start, end))
+  }
+
   def complement: DNAString = DNAString(seq.map(DNAString.complements))
 
   def gcContent: Double = {
-    seq.foldLeft(0.0) { (acc, next) =>
-      if (Set('C', 'G').contains(next)) acc + 1
-      else acc
-    } / length
+    if (length == 0) 0
+    else {
+      seq.foldLeft(0.0) { (acc, next) =>
+        if (Set('C', 'G').contains(next)) acc + 1
+        else acc
+      } / length
+    }
   }
 
-  def atContent: Double = 1 - gcContent
+  def atContent: Double =
+    if (length == 0) 0
+    else {
+      1 - gcContent
+    }
 
   def reverse: DNAString = DNAString(seq.reverse)
 
