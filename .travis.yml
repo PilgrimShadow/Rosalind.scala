@@ -1,9 +1,5 @@
 language: scala
 
-os:
-  - linux
-  - osx
-
 scala:
   - 2.11.6
 
