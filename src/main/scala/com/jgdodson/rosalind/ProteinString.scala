@@ -5,6 +5,8 @@ case class ProteinString(seq: String) extends GeneticString[ProteinString] {
   // Error checking during initialization.
   if (seq.exists(ch => !alphabet.contains(ch))) {
     throw new Error("Peptide string contains invalid character.")
+  } else if (seq.length == 0) {
+    throw new Error("ProteinString cannot be empty")
   }
 
   def alphabet: Seq[Char] = ProteinString.alphabet
@@ -21,8 +23,9 @@ case class ProteinString(seq: String) extends GeneticString[ProteinString] {
 
 object ProteinString {
 
+  // The character 'X' is used for the stop codon.
   val alphabet = Seq('A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L',
-    'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y')
+    'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y') :+ 'X'
 
   // These are residue masses
   val masses = Map(

@@ -5,6 +5,8 @@ case class RNAString(seq: String) extends GeneticString[RNAString] {
   // Error checking during initialization.
   if (seq.exists(ch => !alphabet.contains(ch))) {
     throw new Error("RNA string contains invalid character.")
+  } else if (seq.length == 0) {
+    throw new Error("RNAString cannot be empty")
   }
 
   def alphabet: Seq[Char] = RNAString.alphabet
@@ -13,7 +15,18 @@ case class RNAString(seq: String) extends GeneticString[RNAString] {
 
   def toDNAString: DNAString = DNAString(seq.replace('U', 'T'))
 
-  def toProteinString: ProteinString = ProteinString(seq.grouped(3).map(RNAString.rnaCodonTable).toString)
+  // TODO: improve this
+  def toProteinString: ProteinString = {
+
+    val raw = seq.grouped(3).foldLeft("") { (acc, next) =>
+      if (next.length == 3) acc + RNAString.rnaCodonTable(next)
+      else acc
+    }
+
+    ProteinString(raw)
+  }
+
+  def reverse: RNAString = RNAString(seq.reverse)
 
   def substring(start: Int, end: Int): RNAString = {
     RNAString(seq.substring(start, end))
@@ -45,8 +58,6 @@ case class RNAString(seq: String) extends GeneticString[RNAString] {
 
     onepass(seq) ++ onepass(seq.reverse)
   }
-
-  def reverse: RNAString = RNAString(seq.reverse)
 
 
 }
