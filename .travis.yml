@@ -3,5 +3,9 @@ language: scala
 scala:
   - 2.11.6
 
+script: "sbt clean coverage test"
+
+after_success: "sbt coveralls"
+
 notifications:
   email: false
