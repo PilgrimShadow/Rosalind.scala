@@ -26,8 +26,17 @@ object RNAStringTest extends Properties("RNAStringTest") {
     rna.length == rna.toDNAString.length
   }
 
-  property("valid-translation") = forAll(RNAStrings suchThat(_.length > 2)) { rna =>
+  property("valid-translation") = forAll(RNAStrings suchThat (_.length >= 3)) { rna =>
     rna.toProteinString.seq.forall(ch => ProteinString.alphabet.contains(ch))
   }
+
+  property("positive-mass") = forAll(RNAStrings) { rna =>
+    rna.mass > 0
+  }
+
+  property("positive-masses") = RNAString.masses.forall(_._2 > 0)
+
+  // A,C,G,U
+  property("alphabet-size") = RNAString.alphabet.size == 4
 
 }

@@ -27,7 +27,7 @@ object ProteinString {
   val alphabet = Seq('A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L',
     'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y') :+ 'X'
 
-  // These are residue masses
+  // These are monoisotopic residue masses.
   val masses = Map(
     'A' -> 71.03711,
     'C' -> 103.00919,

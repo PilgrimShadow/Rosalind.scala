@@ -47,4 +47,13 @@ object DNAStringTest extends Properties("DNAString") {
     else sum == 0
   }
 
+  property("positive-mass") = forAll(DNAStrings) { dna =>
+    dna.mass > 0
+  }
+
+  property("positive-masses") = DNAString.masses.forall(_._2 > 0)
+
+  // A, C, G, T
+  property("alphabet-size") = DNAString.alphabet.size == 4
+
 }
